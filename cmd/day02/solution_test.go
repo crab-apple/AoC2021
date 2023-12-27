@@ -8,15 +8,20 @@ import (
 )
 
 var testInput = `
-Test input here
+forward 5
+down 5
+forward 8
+up 3
+down 8
+forward 2
 `
 
 func TestPart1(t *testing.T) {
-	assert.Equal(t, 0, day02.SolvePart1(testInput))
+	assert.Equal(t, 150, day02.SolvePart1(testInput))
 }
 
 func TestPart1RealInput(t *testing.T) {
-	assert.Equal(t, 0, day02.SolvePart1(input.ReadInputFile()))
+	assert.Equal(t, 2150351, day02.SolvePart1(input.ReadInputFile()))
 }
 
 func TestPart2(t *testing.T) {

@@ -9,7 +9,7 @@ import (
 )
 
 func Read[T any](input string, f func(string) T) []T {
-	return utils.Map(readLines(input), f)
+	return utils.Map(ReadLines(input), f)
 }
 
 func ReadInputFile() string {
@@ -20,7 +20,7 @@ func ReadInputFile() string {
 	return string(b)
 }
 
-func readLines(input string) []string {
+func ReadLines(input string) []string {
 	return utils.Filter(
 		utils.Map(
 			strings.Split(input, "\n"),
