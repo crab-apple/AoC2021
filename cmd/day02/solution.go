@@ -23,5 +23,19 @@ func SolvePart1(s string) int {
 }
 
 func SolvePart2(s string) int {
-	return 0
+	var aim, distance, depth int
+	for _, command := range input.ReadLines(s) {
+		cmdType := strings.Split(command, " ")[0]
+		amt := input.ToInt(strings.Split(command, " ")[1])
+		switch cmdType {
+		case "forward":
+			distance += amt
+			depth += aim * amt
+		case "up":
+			aim -= amt
+		case "down":
+			aim += amt
+		}
+	}
+	return depth * distance
 }
