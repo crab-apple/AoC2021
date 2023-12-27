@@ -13,5 +13,12 @@ func SolvePart1(s string) int {
 }
 
 func SolvePart2(s string) int {
-	return 0
+	depths := input.Read(s, input.ToInt)
+	c := 0
+	for i := 0; i < len(depths)-3; i++ {
+		if depths[i] < depths[i+3] {
+			c++
+		}
+	}
+	return c
 }
