@@ -11,18 +11,14 @@ func SolvePart1(s string) int {
 	nums := parseInput(s)
 	cnts := findFrequencies(nums, numBits)
 
-	var gamma2, epsilon2 int
+	var gamma, epsilon int
 	for i := range cnts {
-		if cnts[i] == 0 {
-			break
-		}
-		if cnts[i] > len(nums)/2 {
-			gamma2 |= 1 << i
+		if cnts[i][1] > len(nums)/2 {
+			gamma |= 1 << i
 		} else {
-			epsilon2 |= 1 << i
+			epsilon |= 1 << i
 		}
 	}
-	gamma, epsilon := gamma2, epsilon2
 	return epsilon * gamma
 }
 
@@ -30,7 +26,7 @@ func SolvePart2(s string) int {
 	numBits := len(input.ReadLines(s)[0])
 	nums := parseInput(s)
 
-	var cnts []int
+	var cnts [][2]int
 	var funnel []int
 	var wNumBits int
 
@@ -38,22 +34,15 @@ func SolvePart2(s string) int {
 	wNumBits = numBits
 	for len(funnel) != 1 {
 		cnts = findFrequencies(funnel, wNumBits)
-		var threshold int
-		if len(funnel)%2 == 0 {
-			threshold = len(funnel) / 2
+		var filter int
+		if cnts[len(cnts)-1][1] >= cnts[len(cnts)-1][0] {
+			filter = 1
 		} else {
-			threshold = (len(funnel) + 1) / 2
+			filter = 0
 		}
-
-		if cnts[len(cnts)-1] >= threshold {
-			funnel = utils.Filter(funnel, func(i int) bool {
-				return digitAt(i, wNumBits-1) == 1
-			})
-		} else {
-			funnel = utils.Filter(funnel, func(i int) bool {
-				return digitAt(i, wNumBits-1) == 0
-			})
-		}
+		funnel = utils.Filter(funnel, func(i int) bool {
+			return digitAt(i, wNumBits-1) == filter
+		})
 		wNumBits--
 	}
 
@@ -63,22 +52,15 @@ func SolvePart2(s string) int {
 	wNumBits = numBits
 	for len(funnel) != 1 {
 		cnts = findFrequencies(funnel, wNumBits)
-		var threshold int
-		if len(funnel)%2 == 0 {
-			threshold = len(funnel) / 2
+		var filter int
+		if cnts[len(cnts)-1][1] < cnts[len(cnts)-1][0] {
+			filter = 1
 		} else {
-			threshold = (len(funnel) + 1) / 2
+			filter = 0
 		}
-
-		if cnts[len(cnts)-1] < threshold {
-			funnel = utils.Filter(funnel, func(i int) bool {
-				return digitAt(i, wNumBits-1) == 1
-			})
-		} else {
-			funnel = utils.Filter(funnel, func(i int) bool {
-				return digitAt(i, wNumBits-1) == 0
-			})
-		}
+		funnel = utils.Filter(funnel, func(i int) bool {
+			return digitAt(i, wNumBits-1) == filter
+		})
 		wNumBits--
 	}
 
@@ -98,14 +80,16 @@ func parseInput(s string) []int {
 	})
 }
 
-func findFrequencies(nums []int, numSignificantBits int) []int {
+func findFrequencies(nums []int, numSignificantBits int) [][2]int {
 
-	cnts := make([]int, numSignificantBits)
+	cnts := make([][2]int, numSignificantBits)
 
 	for _, line := range nums {
 		for i := range cnts {
 			if line&(1<<i) != 0 {
-				cnts[i]++
+				cnts[i][1]++
+			} else {
+				cnts[i][0]++
 			}
 		}
 	}
