@@ -26,47 +26,36 @@ func SolvePart2(s string) int {
 	numBits := len(input.ReadLines(s)[0])
 	nums := parseInput(s)
 
-	var cnts [][2]int
-	var funnel []int
-	var wNumBits int
-
-	funnel = nums
-	wNumBits = numBits
-	for len(funnel) != 1 {
-		cnts = findFrequencies(funnel, wNumBits)
-		var filter int
-		if cnts[len(cnts)-1][1] >= cnts[len(cnts)-1][0] {
-			filter = 1
+	oxigenRating := funnelInts(nums, numBits, func(freqs [2]int) int {
+		if freqs[1] >= freqs[0] {
+			return 1
 		} else {
-			filter = 0
+			return 0
 		}
-		funnel = utils.Filter(funnel, func(i int) bool {
-			return digitAt(i, wNumBits-1) == filter
-		})
-		wNumBits--
-	}
+	})
 
-	oxigenRating := funnel[0]
-
-	funnel = nums
-	wNumBits = numBits
-	for len(funnel) != 1 {
-		cnts = findFrequencies(funnel, wNumBits)
-		var filter int
-		if cnts[len(cnts)-1][1] < cnts[len(cnts)-1][0] {
-			filter = 1
+	co2Rating := funnelInts(nums, numBits, func(freqs [2]int) int {
+		if freqs[1] < freqs[0] {
+			return 1
 		} else {
-			filter = 0
+			return 0
 		}
-		funnel = utils.Filter(funnel, func(i int) bool {
-			return digitAt(i, wNumBits-1) == filter
-		})
-		wNumBits--
-	}
-
-	co2Rating := funnel[0]
+	})
 
 	return oxigenRating * co2Rating
+}
+
+func funnelInts(ints []int, numBits int, bitCriteria func(freqs [2]int) int) int {
+	for len(ints) != 1 {
+		cnts := findFrequencies(ints, numBits)
+		var filter int
+		filter = bitCriteria(cnts[len(cnts)-1])
+		ints = utils.Filter(ints, func(i int) bool {
+			return digitAt(i, numBits-1) == filter
+		})
+		numBits--
+	}
+	return ints[0]
 }
 
 func digitAt(n int, digitPosition int) int {
