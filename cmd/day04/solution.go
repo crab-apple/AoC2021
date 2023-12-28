@@ -4,6 +4,7 @@ import (
 	"github.com/crab-apple/AoC2021/internal/input"
 	"github.com/crab-apple/AoC2021/internal/utils"
 	"log"
+	"slices"
 	"strings"
 )
 
@@ -23,7 +24,20 @@ func SolvePart1(s string) int {
 }
 
 func SolvePart2(s string) int {
-	return 0
+	drawnNumbers, boards := parseInput(s)
+	score := 0
+	var won []int
+
+	for _, drawnNumber := range drawnNumbers {
+		for i := range boards {
+			if !slices.Contains(won, i) && boards[i].Remove(drawnNumber) {
+				score = drawnNumber * boards[i].SumOfNumbersLeft()
+				won = append(won, i)
+			}
+		}
+	}
+
+	return score
 }
 
 func parseInput(s string) ([]int, []Board) {
