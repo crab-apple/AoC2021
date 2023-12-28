@@ -4,6 +4,7 @@ import (
 	"github.com/crab-apple/AoC2021/internal/utils"
 	"log"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -21,13 +22,17 @@ func ReadInputFile() string {
 }
 
 func ReadLines(input string) []string {
-	return utils.Filter(
-		utils.Map(
-			strings.Split(input, "\n"),
-			strings.TrimSpace,
-		),
-		utils.Not(utils.IsEmpty),
+	lines := utils.Map(
+		strings.Split(input, "\n"),
+		strings.TrimSpace,
 	)
+	if utils.IsEmpty(lines[0]) {
+		lines = lines[1:]
+	}
+	if utils.IsEmpty(lines[len(lines)-1]) {
+		lines = lines[:len(lines)-1]
+	}
+	return lines
 }
 
 func ToInt(s string) int {
@@ -36,4 +41,8 @@ func ToInt(s string) int {
 		log.Panic(err)
 	}
 	return i
+}
+
+func RegexSplit(s string, regex string) []string {
+	return regexp.MustCompile(regex).Split(s, -1)
 }

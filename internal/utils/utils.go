@@ -26,6 +26,22 @@ func Reduce[T, U any](init U, ts []T, f func(U, T) U) U {
 	return u
 }
 
+func Values[T comparable, U any](m map[T]U) []U {
+	r := make([]U, len(m))
+	for _, v := range m {
+		r = append(r, v)
+	}
+	return r
+}
+
+func Keys[T comparable, U any](m map[T]U) []T {
+	r := make([]T, len(m))
+	for k, _ := range m {
+		r = append(r, k)
+	}
+	return r
+}
+
 func Sum(is []int) int {
 	return Reduce(0, is, func(a int, b int) int {
 		return a + b
