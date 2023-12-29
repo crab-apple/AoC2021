@@ -8,15 +8,19 @@ import (
 )
 
 var testInput = `
-Test input here
+2199943210
+3987894921
+9856789892
+8767896789
+9899965678
 `
 
 func TestPart1(t *testing.T) {
-	assert.Equal(t, 0, day09.SolvePart1(testInput))
+	assert.Equal(t, 15, day09.SolvePart1(testInput))
 }
 
 func TestPart1RealInput(t *testing.T) {
-	assert.Equal(t, 0, day09.SolvePart1(input.ReadInputFile()))
+	assert.Equal(t, 558, day09.SolvePart1(input.ReadInputFile()))
 }
 
 func TestPart2(t *testing.T) {
