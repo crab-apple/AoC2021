@@ -1,5 +1,9 @@
 package utils
 
+import (
+	"cmp"
+)
+
 func Map[T, U any](ts []T, f func(T) U) []U {
 	us := make([]U, len(ts))
 	for i, t := range ts {
@@ -56,6 +60,49 @@ func Count[T any](ts []T, p func(T) bool) int {
 		}
 	}
 	return c
+}
+
+func Max[T cmp.Ordered](ts []T) T {
+	return MaxBy(ts, Identity[T])
+}
+
+func Min[T cmp.Ordered](ts []T) T {
+	return MinBy(ts, Identity[T])
+}
+
+func MaxBy[T any, U cmp.Ordered](ts []T, mapper func(T) U) T {
+	return MaxByComp(ts, func(a T, b T) int {
+		return cmp.Compare(mapper(a), mapper(b))
+	})
+}
+
+func MinBy[T any, U cmp.Ordered](ts []T, mapper func(T) U) T {
+	return MinByComp(ts, func(a T, b T) int {
+		return cmp.Compare(mapper(a), mapper(b))
+	})
+}
+
+func MaxByComp[T any](ts []T, compare func(T, T) int) T {
+	var maxResult T
+	var haveResult bool
+	for i := range ts {
+		r := ts[i]
+		if !haveResult || compare(r, maxResult) > 0 {
+			maxResult = r
+			haveResult = true
+		}
+	}
+	return maxResult
+}
+
+func MinByComp[T any](ts []T, compare func(T, T) int) T {
+	return MaxByComp(ts, func(a T, b T) int {
+		return -compare(a, b)
+	})
+}
+
+func Identity[T any](t T) T {
+	return t
 }
 
 func Not[T any](p func(T) bool) func(T) bool {
