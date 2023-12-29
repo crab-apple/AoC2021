@@ -2,8 +2,8 @@ package day05
 
 import (
 	"github.com/crab-apple/AoC2021/internal/input"
+	"github.com/crab-apple/AoC2021/internal/mathutils"
 	"github.com/crab-apple/AoC2021/internal/utils"
-	"log"
 	"strings"
 )
 
@@ -24,7 +24,17 @@ func SolvePart1(s string) int {
 }
 
 func SolvePart2(s string) int {
-	return 0
+	vents := VentSet(parseInput(s))
+	overlapCount := 0
+	for i := 0; i < 1000; i++ {
+		for j := 0; j < 1000; j++ {
+			coords := Coords{i, j}
+			if vents.ThereIsOverlap(coords) {
+				overlapCount++
+			}
+		}
+	}
+	return overlapCount
 }
 
 func parseInput(s string) []Vent {
@@ -57,19 +67,24 @@ func (v VentSet) ThereIsOverlap(c Coords) bool {
 type Vent struct{ Start, End Coords }
 
 func (v Vent) Contains(c Coords) bool {
-	if !v.IsHorizontalOrVertical() {
-		log.Panic("Not implemented")
+	minX := min(v.Start.X, v.End.X)
+	maxX := max(v.Start.X, v.End.X)
+	minY := min(v.Start.Y, v.End.Y)
+	maxY := max(v.Start.Y, v.End.Y)
+	if minX == maxX || minY == maxY {
+		if minX <= c.X && maxX >= c.X && minY <= c.Y && maxY >= c.Y {
+			return true
+		}
 	}
-	return contained(v.Start.X, v.End.X, c.X) && contained(v.Start.Y, v.End.Y, c.Y)
-}
 
-func contained(rangeStart int, rangeEnd int, i int) bool {
-	if rangeStart > rangeEnd {
-		temp := rangeEnd
-		rangeEnd = rangeStart
-		rangeStart = temp
+	if c == v.Start {
+		return true
 	}
-	return rangeStart <= i && rangeEnd >= i
+
+	vector := v.End.Minus(v.Start)
+	relativeCoords := c.Minus(v.Start)
+
+	return mathutils.Abs(relativeCoords.X) == mathutils.Abs(relativeCoords.Y) && relativeCoords.Sign() == vector.Sign() && mathutils.Abs(relativeCoords.X) <= mathutils.Abs(vector.X)
 }
 
 func (v Vent) IsHorizontalOrVertical() bool {
@@ -77,3 +92,11 @@ func (v Vent) IsHorizontalOrVertical() bool {
 }
 
 type Coords struct{ X, Y int }
+
+func (c Coords) Minus(other Coords) Coords {
+	return Coords{c.X - other.X, c.Y - other.Y}
+}
+
+func (c Coords) Sign() Coords {
+	return Coords{mathutils.Sign(c.X), mathutils.Sign(c.Y)}
+}

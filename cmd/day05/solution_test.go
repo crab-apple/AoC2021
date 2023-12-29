@@ -29,14 +29,14 @@ func TestPart1RealInput(t *testing.T) {
 }
 
 func TestPart2(t *testing.T) {
-	assert.Equal(t, 0, day05.SolvePart2(testInput))
+	assert.Equal(t, 12, day05.SolvePart2(testInput))
 }
 
 func TestPart2RealInput(t *testing.T) {
-	assert.Equal(t, 0, day05.SolvePart2(input.ReadInputFile()))
+	assert.Equal(t, 17193, day05.SolvePart2(input.ReadInputFile()))
 }
 
-func TestVent_Contains(t *testing.T) {
+func TestVent_ContainsStraight(t *testing.T) {
 	vent := day05.Vent{day05.Coords{2, 3}, day05.Coords{20, 3}}
 
 	assert.False(t, vent.Contains(day05.Coords{1, 3}))
@@ -45,6 +45,23 @@ func TestVent_Contains(t *testing.T) {
 	assert.True(t, vent.Contains(day05.Coords{20, 3}))
 	assert.True(t, vent.Contains(day05.Coords{15, 3}))
 	assert.False(t, vent.Contains(day05.Coords{15, 2}))
+}
+
+func TestVent_ContainsDiagonal(t *testing.T) {
+	vent := day05.Vent{day05.Coords{2, 3}, day05.Coords{4, 1}}
+
+	//assert.False(t, vent.Contains(day05.Coords{1, 4}))
+
+	assert.True(t, vent.Contains(day05.Coords{2, 3}))
+	assert.True(t, vent.Contains(day05.Coords{3, 2}))
+	assert.True(t, vent.Contains(day05.Coords{4, 1}))
+
+	assert.False(t, vent.Contains(day05.Coords{5, 0}))
+
+	assert.False(t, vent.Contains(day05.Coords{5, 1}))
+	assert.False(t, vent.Contains(day05.Coords{3, 1}))
+	assert.False(t, vent.Contains(day05.Coords{4, 2}))
+	assert.False(t, vent.Contains(day05.Coords{4, 0}))
 }
 
 func TestVent_ContainsReversed(t *testing.T) {
