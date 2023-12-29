@@ -7,6 +7,14 @@ import (
 )
 
 func SolvePart1(s string) int {
+	return solve(s, 80)
+}
+
+func SolvePart2(s string) int {
+	return solve(s, 256)
+}
+
+func solve(s string, days int) int {
 
 	line := input.ReadLines(s)[0]
 
@@ -17,15 +25,11 @@ func SolvePart1(s string) int {
 		school[fish]++
 	}
 
-	for i := 0; i < 80; i++ {
+	for i := 0; i < days; i++ {
 		school.advance()
 	}
 
 	return school.total()
-}
-
-func SolvePart2(s string) int {
-	return 0
 }
 
 type School [9]int

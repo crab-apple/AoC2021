@@ -20,9 +20,9 @@ func TestPart1RealInput(t *testing.T) {
 }
 
 func TestPart2(t *testing.T) {
-	assert.Equal(t, 0, day06.SolvePart2(testInput))
+	assert.Equal(t, 26984457539, day06.SolvePart2(testInput))
 }
 
 func TestPart2RealInput(t *testing.T) {
-	assert.Equal(t, 0, day06.SolvePart2(input.ReadInputFile()))
+	assert.Equal(t, 1631629590423, day06.SolvePart2(input.ReadInputFile()))
 }
