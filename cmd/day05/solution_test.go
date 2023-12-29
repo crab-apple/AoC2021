@@ -37,7 +37,7 @@ func TestPart2RealInput(t *testing.T) {
 }
 
 func TestVent_ContainsStraight(t *testing.T) {
-	vent := day05.Vent{day05.Coords{2, 3}, day05.Coords{20, 3}}
+	vent := day05.NewVent(day05.Coords{2, 3}, day05.Coords{20, 3})
 
 	assert.False(t, vent.Contains(day05.Coords{1, 3}))
 	assert.False(t, vent.Contains(day05.Coords{21, 3}))
@@ -48,7 +48,7 @@ func TestVent_ContainsStraight(t *testing.T) {
 }
 
 func TestVent_ContainsDiagonal(t *testing.T) {
-	vent := day05.Vent{day05.Coords{2, 3}, day05.Coords{4, 1}}
+	vent := day05.NewVent(day05.Coords{2, 3}, day05.Coords{4, 1})
 
 	//assert.False(t, vent.Contains(day05.Coords{1, 4}))
 
@@ -65,7 +65,7 @@ func TestVent_ContainsDiagonal(t *testing.T) {
 }
 
 func TestVent_ContainsReversed(t *testing.T) {
-	vent := day05.Vent{day05.Coords{20, 3}, day05.Coords{2, 3}}
+	vent := day05.NewVent(day05.Coords{20, 3}, day05.Coords{2, 3})
 
 	assert.False(t, vent.Contains(day05.Coords{1, 3}))
 	assert.False(t, vent.Contains(day05.Coords{21, 3}))
@@ -78,8 +78,8 @@ func TestVent_ContainsReversed(t *testing.T) {
 func TestVentSet_ThereIsOverlap(t *testing.T) {
 
 	vs := day05.VentSet{
-		day05.Vent{day05.Coords{2, 3}, day05.Coords{2, 8}},
-		day05.Vent{day05.Coords{2, 6}, day05.Coords{2, 10}},
+		day05.NewVent(day05.Coords{2, 3}, day05.Coords{2, 8}),
+		day05.NewVent(day05.Coords{2, 6}, day05.Coords{2, 10}),
 	}
 
 	assert.False(t, vs.ThereIsOverlap(day05.Coords{2, 0}))

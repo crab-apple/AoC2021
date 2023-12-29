@@ -42,10 +42,10 @@ func parseInput(s string) []Vent {
 }
 
 func parseVent(s string) Vent {
-	return Vent{
+	return NewVent(
 		parseCoords(strings.Split(s, " -> ")[0]),
 		parseCoords(strings.Split(s, " -> ")[1]),
-	}
+	)
 }
 
 func parseCoords(s string) Coords {
@@ -64,7 +64,10 @@ func (v VentSet) ThereIsOverlap(c Coords) bool {
 	return ventCount > 1
 }
 
-type Vent struct{ Start, End Coords }
+type Vent struct {
+	Start, End Coords
+	points     []Coords
+}
 
 func (v Vent) Contains(c Coords) bool {
 	minX := min(v.Start.X, v.End.X)
@@ -85,6 +88,10 @@ func (v Vent) Contains(c Coords) bool {
 	relativeCoords := c.Minus(v.Start)
 
 	return mathutils.Abs(relativeCoords.X) == mathutils.Abs(relativeCoords.Y) && relativeCoords.Sign() == vector.Sign() && mathutils.Abs(relativeCoords.X) <= mathutils.Abs(vector.X)
+}
+
+func NewVent(start, end Coords) Vent {
+	return Vent{start, end, []Coords{}}
 }
 
 func (v Vent) IsHorizontalOrVertical() bool {
