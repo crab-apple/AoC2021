@@ -2,6 +2,7 @@ package utils
 
 import (
 	"cmp"
+	"log"
 )
 
 func Map[T, U any](ts []T, f func(T) U) []U {
@@ -20,6 +21,14 @@ func Filter[T any](ts []T, p func(T) bool) []T {
 		}
 	}
 	return r
+}
+
+func Single[T any](ts []T, p func(T) bool) T {
+	ts = Filter(ts, p)
+	if len(ts) != 1 {
+		log.Panicf("Espected one element, found %v", len(ts))
+	}
+	return ts[0]
 }
 
 func Reduce[T, U any](init U, ts []T, f func(U, T) U) U {
