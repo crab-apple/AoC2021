@@ -8,28 +8,31 @@ import (
 )
 
 func SolvePart1(s string) int {
-	vents := VentSet(utils.Filter(parseInput(s), func(vent Vent) bool {
+	vents := utils.Filter(parseInput(s), func(vent Vent) bool {
 		return vent.IsHorizontalOrVertical()
-	}))
-	overlapCount := 0
-	for i := 0; i < 1000; i++ {
-		for j := 0; j < 1000; j++ {
-			coords := Coords{i, j}
-			if vents.ThereIsOverlap(coords) {
-				overlapCount++
-			}
-		}
-	}
-	return overlapCount
+	})
+	return countOverlaps(vents)
 }
 
 func SolvePart2(s string) int {
-	vents := VentSet(parseInput(s))
+	vents := parseInput(s)
+	return countOverlaps(vents)
+}
+
+func countOverlaps(vents []Vent) int {
+
+	counts := make(map[Coords]int)
+	for i := range vents {
+		for c, _ := range vents[i].points {
+			counts[c]++
+		}
+	}
+
 	overlapCount := 0
 	for i := 0; i < 1000; i++ {
 		for j := 0; j < 1000; j++ {
 			coords := Coords{i, j}
-			if vents.ThereIsOverlap(coords) {
+			if counts[coords] > 1 {
 				overlapCount++
 			}
 		}
@@ -55,43 +58,24 @@ func parseCoords(s string) Coords {
 	}
 }
 
-type VentSet []Vent
-
-func (v VentSet) ThereIsOverlap(c Coords) bool {
-	ventCount := utils.Count(v, func(vent Vent) bool {
-		return vent.Contains(c)
-	})
-	return ventCount > 1
-}
-
 type Vent struct {
 	Start, End Coords
-	points     []Coords
-}
-
-func (v Vent) Contains(c Coords) bool {
-	minX := min(v.Start.X, v.End.X)
-	maxX := max(v.Start.X, v.End.X)
-	minY := min(v.Start.Y, v.End.Y)
-	maxY := max(v.Start.Y, v.End.Y)
-	if minX == maxX || minY == maxY {
-		if minX <= c.X && maxX >= c.X && minY <= c.Y && maxY >= c.Y {
-			return true
-		}
-	}
-
-	if c == v.Start {
-		return true
-	}
-
-	vector := v.End.Minus(v.Start)
-	relativeCoords := c.Minus(v.Start)
-
-	return mathutils.Abs(relativeCoords.X) == mathutils.Abs(relativeCoords.Y) && relativeCoords.Sign() == vector.Sign() && mathutils.Abs(relativeCoords.X) <= mathutils.Abs(vector.X)
+	points     utils.Set[Coords]
 }
 
 func NewVent(start, end Coords) Vent {
-	return Vent{start, end, []Coords{}}
+	sign := end.Minus(start).Sign()
+
+	points := make(utils.Set[Coords])
+
+	current := start
+	points.Add(current)
+	for current != end {
+		current = current.Plus(sign)
+		points.Add(current)
+	}
+
+	return Vent{start, end, points}
 }
 
 func (v Vent) IsHorizontalOrVertical() bool {
@@ -99,6 +83,10 @@ func (v Vent) IsHorizontalOrVertical() bool {
 }
 
 type Coords struct{ X, Y int }
+
+func (c Coords) Plus(other Coords) Coords {
+	return Coords{c.X + other.X, c.Y + other.Y}
+}
 
 func (c Coords) Minus(other Coords) Coords {
 	return Coords{c.X - other.X, c.Y - other.Y}
