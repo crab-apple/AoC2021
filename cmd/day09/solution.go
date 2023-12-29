@@ -2,69 +2,72 @@ package day09
 
 import (
 	"github.com/crab-apple/AoC2021/internal/input"
-	"unicode/utf8"
+	"github.com/crab-apple/AoC2021/internal/utils"
+	"github.com/crab-apple/AoC2021/internal/utils/grid"
+	"sort"
 )
 
 func SolvePart1(s string) int {
 
-	grid := NewGrid(s, func(r rune) int {
-		return input.ToInt(string(r))
-	})
+	g := parseGrid(s)
 
 	count := 0
 
-	for i := 0; i < grid.NumCols(); i++ {
-		for j := 0; j < grid.NumRows(); j++ {
-			h := grid[i][j]
-			lowest := true
-			if i > 0 && grid[i-1][j] <= h {
-				lowest = false
-			}
-			if i < grid.NumCols()-1 && grid[i+1][j] <= h {
-				lowest = false
-			}
-			if j > 0 && grid[i][j-1] <= h {
-				lowest = false
-			}
-			if j < grid.NumRows()-1 && grid[i][j+1] <= h {
-				lowest = false
-			}
-			if lowest {
-				count += h + 1
-			}
-		}
+	for _, p := range findLowPoints(g) {
+		h := g.Get(p)
+		count += h + 1
 	}
 
 	return count
 }
 
 func SolvePart2(s string) int {
-	return 0
+	g := parseGrid(s)
+
+	lowPoints := findLowPoints(g)
+	basinSizes := utils.Map(lowPoints, func(lowPoint grid.GridPosition) int {
+		return findBasinSize(g, lowPoint)
+	})
+
+	sort.Ints(basinSizes)
+	basinSizes = basinSizes[len(basinSizes)-3:]
+
+	return utils.Reduce(1, basinSizes, func(a int, b int) int {
+		return a * b
+	})
 }
 
-type Grid[T any] [][]T
-
-func (g Grid[T]) NumCols() int {
-	return len(g)
+func parseGrid(s string) grid.Grid[int] {
+	return grid.NewGrid(s, func(r rune) int {
+		return input.ToInt(string(r))
+	})
+}
+func findLowPoints(g grid.Grid[int]) []grid.GridPosition {
+	return utils.Filter(g.Positions(), func(p grid.GridPosition) bool {
+		h := g.Get(p)
+		lowest := true
+		for _, n := range p.FourNeighbours() {
+			if g.HasPosition(n) && g.Get(n) <= h {
+				lowest = false
+			}
+		}
+		return lowest
+	})
 }
 
-func (g Grid[T]) NumRows() int {
-	return len(g[0])
-}
-
-func NewGrid[T any](s string, mapper func(rune) T) Grid[T] {
-	lines := input.ReadLines(s)
-	numCols := utf8.RuneCountInString(lines[0])
-	grid := make([][]T, numCols)
-	for i := 0; i < numCols; i++ {
-		grid[i] = make([]T, len(lines))
-	}
-	for rowNum, line := range lines {
-		colNum := 0
-		for _, r := range line {
-			grid[colNum][rowNum] = mapper(r)
-			colNum++
+func findBasinSize(g grid.Grid[int], lowPoint grid.GridPosition) int {
+	seen := make(utils.Set[grid.GridPosition])
+	pending := make([]grid.GridPosition, 0)
+	pending = append(pending, lowPoint)
+	for len(pending) != 0 {
+		p := pending[0]
+		pending = pending[1:]
+		if !seen.Contains(p) && g.HasPosition(p) && g.Get(p) != 9 {
+			seen.Add(p)
+			for _, n := range p.FourNeighbours() {
+				pending = append(pending, n)
+			}
 		}
 	}
-	return grid
+	return len(seen)
 }
