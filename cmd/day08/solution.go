@@ -4,6 +4,7 @@ import (
 	"github.com/crab-apple/AoC2021/internal/input"
 	"github.com/crab-apple/AoC2021/internal/utils"
 	"log"
+	"math"
 	"sort"
 	"strings"
 )
@@ -21,7 +22,14 @@ func SolvePart1(s string) int {
 }
 
 func SolvePart2(s string) int {
-	return 0
+	count := 0
+	for _, line := range input.ReadLines(s) {
+		for i, n := range DecodeLine(line) {
+			decimalPos := 3 - i
+			count += n * int(math.Pow10(decimalPos))
+		}
+	}
+	return count
 }
 
 var repToDigit = map[string]int{

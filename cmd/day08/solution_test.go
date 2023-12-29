@@ -30,11 +30,11 @@ func TestPart1RealInput(t *testing.T) {
 }
 
 func TestPart2(t *testing.T) {
-	assert.Equal(t, 0, day08.SolvePart2(testInput))
+	assert.Equal(t, 61229, day08.SolvePart2(testInput))
 }
 
 func TestPart2RealInput(t *testing.T) {
-	assert.Equal(t, 0, day08.SolvePart2(input.ReadInputFile()))
+	assert.Equal(t, 1023686, day08.SolvePart2(input.ReadInputFile()))
 }
 
 func TestDecodeLine(t *testing.T) {
