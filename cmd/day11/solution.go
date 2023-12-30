@@ -8,9 +8,7 @@ import (
 
 func SolvePart1(s string) int {
 
-	octopuses := grid.NewGrid(s, func(r rune) int {
-		return input.ToInt(string(r))
-	})
+	octopuses := parseInput(s)
 
 	count := 0
 	for i := 0; i < 100; i++ {
@@ -20,7 +18,21 @@ func SolvePart1(s string) int {
 }
 
 func SolvePart2(s string) int {
-	return 0
+	octopuses := parseInput(s)
+
+	i := 0
+	for {
+		i++
+		if doStep(octopuses) == octopuses.NumRows()*octopuses.NumCols() {
+			return i
+		}
+	}
+}
+
+func parseInput(s string) grid.Grid[int] {
+	return grid.NewGrid(s, func(r rune) int {
+		return input.ToInt(string(r))
+	})
 }
 
 func doStep(octopuses grid.Grid[int]) int {
