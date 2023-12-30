@@ -19,6 +19,10 @@ func (g Grid[T]) Get(p GridPosition) T {
 	return g[p.Col][p.Row]
 }
 
+func (g Grid[T]) Set(p GridPosition, t T) {
+	g[p.Col][p.Row] = t
+}
+
 func (g Grid[T]) Positions() []GridPosition {
 	r := make([]GridPosition, g.NumRows()*g.NumCols())
 	k := 0
@@ -71,4 +75,17 @@ func (gp GridPosition) East() GridPosition {
 
 func (gp GridPosition) FourNeighbours() []GridPosition {
 	return []GridPosition{gp.North(), gp.South(), gp.West(), gp.East()}
+}
+
+func (gp GridPosition) EightNeighbours() []GridPosition {
+	return []GridPosition{
+		gp.North(),
+		gp.North().West(),
+		gp.North().East(),
+		gp.South(),
+		gp.South().West(),
+		gp.South().East(),
+		gp.West(),
+		gp.East(),
+	}
 }
