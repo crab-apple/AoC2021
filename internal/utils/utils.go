@@ -41,16 +41,20 @@ func Reduce[T, U any](init U, ts []T, f func(U, T) U) U {
 
 func Values[T comparable, U any](m map[T]U) []U {
 	r := make([]U, len(m))
+	i := 0
 	for _, v := range m {
-		r = append(r, v)
+		r[i] = v
+		i++
 	}
 	return r
 }
 
 func Keys[T comparable, U any](m map[T]U) []T {
 	r := make([]T, len(m))
-	for k, _ := range m {
-		r = append(r, k)
+	i := 0
+	for k := range m {
+		r[i] = k
+		i++
 	}
 	return r
 }
@@ -123,6 +127,14 @@ func Not[T any](p func(T) bool) func(T) bool {
 func IsEmpty(s string) bool {
 	return s == ""
 }
+
+func FirstChar(s string) rune {
+	for _, r := range s {
+		return r
+	}
+	panic("Empty string")
+}
+
 func Pairs[T any](ts []T) []Pair[T] {
 	r := make([]Pair[T], len(ts))
 	for i := range ts {
