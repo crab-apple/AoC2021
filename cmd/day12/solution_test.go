@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-var testInput = `
+var testInput1 = `
 start-A
 start-b
 A-c
@@ -17,8 +17,49 @@ A-end
 b-end
 `
 
+var testInput2 = `
+dc-end
+HN-start
+start-kj
+dc-start
+dc-HN
+LN-dc
+HN-end
+kj-sa
+kj-HN
+kj-dc
+`
+var testInput3 = `
+fs-end
+he-DX
+fs-he
+start-DX
+pj-DX
+end-zg
+zg-sl
+zg-pj
+pj-he
+RW-he
+fs-DX
+pj-RW
+zg-RW
+start-pj
+he-WI
+zg-he
+pj-fs
+start-RW
+`
+
 func TestPart1(t *testing.T) {
-	assert.Equal(t, 10, day12.SolvePart1(testInput))
+	t.Run("Example 1", func(t *testing.T) {
+		assert.Equal(t, 10, day12.SolvePart1(testInput1))
+	})
+	t.Run("Example 2", func(t *testing.T) {
+		assert.Equal(t, 19, day12.SolvePart1(testInput2))
+	})
+	t.Run("Example 3", func(t *testing.T) {
+		assert.Equal(t, 226, day12.SolvePart1(testInput3))
+	})
 }
 
 func TestPart1RealInput(t *testing.T) {
@@ -26,9 +67,17 @@ func TestPart1RealInput(t *testing.T) {
 }
 
 func TestPart2(t *testing.T) {
-	assert.Equal(t, 0, day12.SolvePart2(testInput))
+	t.Run("Example 1", func(t *testing.T) {
+		assert.Equal(t, 36, day12.SolvePart2(testInput1))
+	})
+	t.Run("Example 2", func(t *testing.T) {
+		assert.Equal(t, 103, day12.SolvePart2(testInput2))
+	})
+	t.Run("Example 3", func(t *testing.T) {
+		assert.Equal(t, 3509, day12.SolvePart2(testInput3))
+	})
 }
 
 func TestPart2RealInput(t *testing.T) {
-	assert.Equal(t, 0, day12.SolvePart2(input.ReadInputFile()))
+	assert.Equal(t, 104834, day12.SolvePart2(input.ReadInputFile()))
 }

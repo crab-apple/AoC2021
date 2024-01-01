@@ -1,7 +1,6 @@
 package day12
 
 import (
-	"fmt"
 	"github.com/crab-apple/AoC2021/internal/input"
 	"github.com/crab-apple/AoC2021/internal/utils"
 	"slices"
@@ -9,16 +8,27 @@ import (
 )
 
 func SolvePart1(s string) int {
+	return solve(s, 0)
+}
+
+func SolvePart2(s string) int {
+	return solve(s, 1)
+}
+
+func solve(s string, numRevisitsAllowed int) int {
 	connections := input.Read(s, func(s string) utils.Pair[string] {
 		return utils.Pair[string]{Left: strings.Split(s, "-")[0], Right: strings.Split(s, "-")[1]}
 	})
 	graph := utils.NewUndirectedGraph(connections)
 
-	fmt.Println(graph)
-
-	path := Path{utils.Single(graph.Nodes(), func(node *utils.GraphNode) bool {
-		return node.Name == "start"
-	})}
+	path := Path{
+		[]*utils.GraphNode{
+			utils.Single(graph.Nodes(), func(node *utils.GraphNode) bool {
+				return node.Name == "start"
+			}),
+		},
+		numRevisitsAllowed,
+	}
 
 	paths := findAllEndingPaths(path)
 
@@ -31,21 +41,47 @@ func findAllEndingPaths(path Path) []Path {
 	}
 	r := make([]Path, 0)
 	for _, connection := range path.Last().Connections {
-		if isBigCave(connection) || !slices.Contains(path, connection) {
-			r = append(r, findAllEndingPaths(append(path, connection))...)
+		if path.canVisit(connection) {
+			r = append(r, findAllEndingPaths(path.plus(connection))...)
 		}
 	}
 	return r
 }
 
-func SolvePart2(s string) int {
-	return 0
+type Path struct {
+	nodes        []*utils.GraphNode
+	revisitsLeft int
 }
 
-type Path []*utils.GraphNode
+func (p *Path) hasVisited(node *utils.GraphNode) bool {
+	return slices.Contains(p.nodes, node)
+}
 
-func (p Path) Last() *utils.GraphNode {
-	return p[len(p)-1]
+func (p *Path) plus(node *utils.GraphNode) Path {
+	var revisitsLeftAfter int
+	if isBigCave(node) || !p.hasVisited(node) {
+		revisitsLeftAfter = p.revisitsLeft
+	} else {
+		revisitsLeftAfter = p.revisitsLeft - 1
+	}
+	return Path{append(p.nodes, node), revisitsLeftAfter}
+}
+
+func (p *Path) Last() *utils.GraphNode {
+	return p.nodes[len(p.nodes)-1]
+}
+
+func (p *Path) canVisit(connection *utils.GraphNode) bool {
+	if isBigCave(connection) {
+		return true
+	}
+	if connection.Name == "start" {
+		return false
+	}
+	if !p.hasVisited(connection) {
+		return true
+	}
+	return p.revisitsLeft > 0
 }
 
 func isBigCave(node *utils.GraphNode) bool {
