@@ -1,9 +1,13 @@
 package day15
 
 import (
+	"bytes"
+	"fmt"
 	"github.com/crab-apple/AoC2021/internal/input"
 	"github.com/crab-apple/AoC2021/internal/utils"
 	"github.com/crab-apple/AoC2021/internal/utils/grid"
+	"strconv"
+	"strings"
 )
 
 func SolvePart1(s string) int {
@@ -38,5 +42,42 @@ func SolvePart1(s string) int {
 }
 
 func SolvePart2(s string) int {
-	return 0
+
+	lines := input.ReadLines(s)
+	lines = utils.Map(lines, func(line string) string {
+		return line + inc(line, 1) + inc(line, 2) + inc(line, 3) + inc(line, 4)
+	})
+
+	orig := lines
+	lines = append(lines, incLines(orig, 1)...)
+	lines = append(lines, incLines(orig, 2)...)
+	lines = append(lines, incLines(orig, 3)...)
+	lines = append(lines, incLines(orig, 4)...)
+
+	sb := strings.Builder{}
+
+	for _, line := range lines {
+		sb.WriteString(line + "\n")
+	}
+
+	fmt.Println(sb.String())
+
+	return SolvePart1(sb.String())
+
+}
+
+func inc(line string, i int) string {
+	sb := strings.Builder{}
+	for _, r := range bytes.Runes([]byte(line)) {
+		val := input.ToInt(string(r))
+		sb.WriteString(strconv.Itoa((val-1+i)%9 + 1))
+	}
+
+	return sb.String()
+}
+
+func incLines(lines []string, i int) []string {
+	return utils.Map(lines, func(line string) string {
+		return inc(line, i)
+	})
 }
