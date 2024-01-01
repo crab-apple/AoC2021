@@ -1,6 +1,7 @@
 package day13
 
 import (
+	"fmt"
 	"github.com/crab-apple/AoC2021/internal/input"
 	"github.com/crab-apple/AoC2021/internal/utils"
 	"github.com/crab-apple/AoC2021/internal/utils/grid"
@@ -16,6 +17,30 @@ func SolvePart1(s string) int {
 }
 
 func SolvePart2(s string) int {
+
+	points, folds := parseInput(s)
+
+	var maxX, maxY int
+	for _, fold := range folds {
+		points = applyFold(points, fold)
+		if fold.Axis == "x" {
+			maxX = fold.Value
+		} else {
+			maxY = fold.Value
+		}
+	}
+
+	for y := 0; y <= maxY; y++ {
+		for x := 0; x <= maxX; x++ {
+			if (points.Contains(grid.GridPosition{x, y})) {
+				fmt.Print("#")
+			} else {
+				fmt.Print(".")
+			}
+		}
+		fmt.Println()
+	}
+
 	return 0
 }
 
