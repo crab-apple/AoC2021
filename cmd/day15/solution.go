@@ -2,7 +2,6 @@ package day15
 
 import (
 	"bytes"
-	"fmt"
 	"github.com/crab-apple/AoC2021/internal/input"
 	"github.com/crab-apple/AoC2021/internal/utils"
 	"github.com/crab-apple/AoC2021/internal/utils/grid"
@@ -59,8 +58,6 @@ func SolvePart2(s string) int {
 	for _, line := range lines {
 		sb.WriteString(line + "\n")
 	}
-
-	fmt.Println(sb.String())
 
 	return SolvePart1(sb.String())
 
