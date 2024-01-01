@@ -8,15 +8,32 @@ import (
 )
 
 var testInput = `
-Test input here
+NNCB
+
+CH -> B
+HH -> N
+CB -> H
+NH -> C
+HB -> C
+HC -> B
+HN -> C
+NN -> C
+BH -> H
+NC -> B
+NB -> B
+BN -> B
+BB -> N
+BC -> B
+CC -> N
+CN -> C
 `
 
 func TestPart1(t *testing.T) {
-	assert.Equal(t, 0, day14.SolvePart1(testInput))
+	assert.Equal(t, 1588, day14.SolvePart1(testInput))
 }
 
 func TestPart1RealInput(t *testing.T) {
-	assert.Equal(t, 0, day14.SolvePart1(input.ReadInputFile()))
+	assert.Equal(t, 2657, day14.SolvePart1(input.ReadInputFile()))
 }
 
 func TestPart2(t *testing.T) {
