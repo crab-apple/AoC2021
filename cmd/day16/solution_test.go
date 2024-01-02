@@ -41,11 +41,38 @@ func TestPart1RealInput(t *testing.T) {
 }
 
 func TestPart2(t *testing.T) {
-	assert.Equal(t, 0, day16.SolvePart2(""))
+
+	t.Run("Sum", func(t *testing.T) {
+		assert.Equal(t, 3, day16.SolvePart2("C200B40A82"))
+	})
+	t.Run("Product", func(t *testing.T) {
+		assert.Equal(t, 54, day16.SolvePart2("04005AC33890"))
+	})
+	t.Run("Min", func(t *testing.T) {
+		assert.Equal(t, 7, day16.SolvePart2("880086C3E88112"))
+	})
+	t.Run("Max", func(t *testing.T) {
+		assert.Equal(t, 9, day16.SolvePart2("CE00C43D881120"))
+	})
+	t.Run("LessThan", func(t *testing.T) {
+		assert.Equal(t, 1, day16.SolvePart2("D8005AC2A8F0"))
+	})
+	t.Run("GreaterThan", func(t *testing.T) {
+		assert.Equal(t, 0, day16.SolvePart2("F600BC2D8F"))
+	})
+	t.Run("Equal to (not equal)", func(t *testing.T) {
+		assert.Equal(t, 0, day16.SolvePart2("F600BC2D8F"))
+	})
+	t.Run("Equal to (equal)", func(t *testing.T) {
+		assert.Equal(t, 0, day16.SolvePart2("9C005AC2F8F0"))
+	})
+	t.Run("Equal to", func(t *testing.T) {
+		assert.Equal(t, 1, day16.SolvePart2("9C0141080250320F1802104A08"))
+	})
 }
 
 func TestPart2RealInput(t *testing.T) {
-	assert.Equal(t, 0, day16.SolvePart2(input.ReadInputFile()))
+	assert.Equal(t, 200476472872, day16.SolvePart2(input.ReadInputFile()))
 }
 
 type Part1TestCase struct {

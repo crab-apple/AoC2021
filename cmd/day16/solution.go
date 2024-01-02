@@ -3,12 +3,19 @@ package day16
 import (
 	"encoding/hex"
 	"fmt"
+	"github.com/crab-apple/AoC2021/internal/utils"
 )
 
 func SolvePart1(s string) int {
 	packet := NewPacket(s)
 	//printInfo(packet, 0)
 	return sumVersions(packet)
+}
+
+func SolvePart2(s string) int {
+	packet := NewPacket(s)
+	//printInfo(packet, 0)
+	return packet.Value()
 }
 
 func printInfo(packet Packet, indent int) {
@@ -28,10 +35,6 @@ func printInfo(packet Packet, indent int) {
 	for _, sp := range packet.SubPackets() {
 		printInfo(sp, indent+1)
 	}
-}
-
-func SolvePart2(s string) int {
-	return 0
 }
 
 func sumVersions(p Packet) int {
@@ -92,6 +95,45 @@ func (p *Packet) GetInt(offset, len int) int {
 
 func (p *Packet) getByte(numByte, offset, len int) byte {
 	return p.bytes[numByte] << offset >> (8 - len)
+}
+
+func (p *Packet) Value() int {
+
+	values := utils.Map(p.SubPackets(), func(sp Packet) int {
+		return sp.Value()
+	})
+
+	switch p.TypeId() {
+	case 0:
+		return utils.Sum(values)
+	case 1:
+		return utils.Reduce(1, values, func(a int, b int) int {
+			return a * b
+		})
+	case 2:
+		return utils.Min(values)
+	case 3:
+		return utils.Max(values)
+	case 4:
+		return p.LiteralValue()
+	case 5:
+		if values[0] > values[1] {
+			return 1
+		}
+		return 0
+	case 6:
+		if values[0] < values[1] {
+			return 1
+		}
+		return 0
+	case 7:
+		if values[0] == values[1] {
+			return 1
+		}
+		return 0
+	default:
+		panic("Unsupported operation")
+	}
 }
 
 func (p *Packet) LiteralValue() int {
