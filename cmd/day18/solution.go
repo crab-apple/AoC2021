@@ -14,14 +14,31 @@ func SolvePart1(s string) int {
 	})
 	current := numbers[0]
 	for i := 1; i < len(numbers); i++ {
-		current = &PairNumber{current, numbers[i]}
-		Reduce(current)
+		current = sum(current, numbers[i])
 	}
 	return current.Magnitude()
 }
 
 func SolvePart2(s string) int {
-	return 0
+	numberStrs := input.ReadLines(s)
+
+	maxVal := 0
+	for i, ni := range numberStrs {
+		for j, nj := range numberStrs {
+			if i == j {
+				continue
+			}
+			maxVal = max(maxVal, sum(ParseSnailNumber(ni), ParseSnailNumber(nj)).Magnitude())
+			maxVal = max(maxVal, sum(ParseSnailNumber(nj), ParseSnailNumber(ni)).Magnitude())
+		}
+	}
+	return maxVal
+}
+
+func sum(a, b SnailNumber) SnailNumber {
+	result := &PairNumber{a, b}
+	Reduce(result)
+	return result
 }
 
 func Reduce(number SnailNumber) {
